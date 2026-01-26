@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISM Portal</title>
+    <title>ISM Tools Portal</title>
     <style>
         /* --- 基礎設定 --- */
         body, html {
@@ -11,14 +11,14 @@
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden; /* 防止出現雙重滾動條 */
+            overflow: hidden;
         }
 
         /* --- 頂部導覽列 (Navbar) --- */
         header {
-            background-color: #3b82f6; /* 海洋藍 */
+            background-color: #3b82f6;
             background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
-            height: 40px;
+            height: 40px; /* 保持精緻的 40px 高度 */
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -46,7 +46,7 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            padding: 8px 12px;
+            padding: 4px 8px;
             border-radius: 4px;
             transition: background 0.3s;
         }
@@ -58,15 +58,15 @@
         /* --- 主內容區 (Iframe & Welcome) --- */
         #main-container {
             width: 100%;
-            height: calc(100vh - 40px); /* 扣除導覽列高度 */
+            height: calc(100vh - 40px); /* 扣除 40px header */
             position: relative;
         }
 
-        /* 歡迎畫面 (預設顯示) */
+        /* 歡迎畫面 */
         #welcome-screen {
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=2574&auto=format&fit=crop'); /* 類似您提供的藍天海洋圖 */
+            background-image: url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -91,12 +91,12 @@
             font-size: 1.5rem;
         }
 
-        /* 嵌入網頁框架 (Iframe) */
+        /* 嵌入網頁框架 */
         iframe {
             width: 100%;
             height: 100%;
             border: none;
-            display: none; /* 預設隱藏，點擊後顯示 */
+            display: none;
             background-color: #f3f4f6;
             position: absolute;
             top: 0;
@@ -112,6 +112,8 @@
         <nav>
             <a href="#" onclick="loadPage('https://doclink-wisdom.vercel.app/')">DocLink</a>
             <a href="#" onclick="loadPage('https://quiaudit.vercel.app/')">QuiAudit</a>
+            
+            <a href="#" onclick="loadPage('https://script.google.com/macros/s/AKfycbyX44EANwyHIDfN06qrE7j7_ZfnmmN0NDf9zI2SpFitJCoc2Nuxa14fnTwnEHadilA7/exec')">ValiCon</a>
         </nav>
     </header>
 
@@ -128,20 +130,18 @@
         const iframe = document.getElementById('content-frame');
         const welcomeScreen = document.getElementById('welcome-screen');
 
-        // 函數：加載目標網頁
         function loadPage(url) {
-            welcomeScreen.style.opacity = '0'; // 淡出歡迎畫面
+            welcomeScreen.style.opacity = '0';
             setTimeout(() => {
-                welcomeScreen.style.display = 'none'; // 隱藏歡迎畫面
-                iframe.style.display = 'block'; // 顯示 Iframe
-                iframe.src = url; // 設定 Iframe 網址
-            }, 300); // 等待淡出動畫
+                welcomeScreen.style.display = 'none';
+                iframe.style.display = 'block';
+                iframe.src = url;
+            }, 300);
         }
 
-        // 函數：回到首頁 (點擊左上角 Logo 時)
         function showHome() {
             iframe.style.display = 'none';
-            iframe.src = ''; // 清空以停止載入
+            iframe.src = ''; 
             welcomeScreen.style.display = 'flex';
             setTimeout(() => {
                 welcomeScreen.style.opacity = '1';
