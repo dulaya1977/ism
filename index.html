@@ -5,24 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Tools Portal</title>
     <style>
-        /* --- 基礎設定 --- */
+        /* --- 基礎設定 (升級為彈性排版) --- */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            display: flex;          /* 將整體網頁設為彈性盒子 */
+            flex-direction: column; /* 由上往下直向排列 */
         }
 
         /* --- 頂部導覽列 (Navbar) --- */
         header {
             background-color: #3b82f6;
             background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
-            height: 40px; /* 保持精緻的 40px 高度 */
+            min-height: 40px; /* 改用 min-height，讓高度可以根據內容自動撐開 */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 8px 20px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             position: relative;
             z-index: 10;
@@ -34,11 +36,14 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
+            line-height: 1.2;
         }
 
         nav {
             display: flex;
-            gap: 20px;
+            gap: 15px; 
+            flex-wrap: wrap; /* 允許內容換行 */
+            justify-content: flex-end; /* 按鈕靠右對齊 */
         }
 
         nav a {
@@ -46,10 +51,10 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            padding: 4px 8px;
+            padding: 4px 6px;
             border-radius: 4px;
             transition: background 0.3s;
-            cursor: pointer; /* 確保滑鼠移過去會變成手指圖示 */
+            cursor: pointer; 
         }
 
         nav a:hover {
@@ -59,7 +64,7 @@
         /* --- 主內容區 (Iframe & Welcome) --- */
         #main-container {
             width: 100%;
-            height: calc(100vh - 40px); /* 扣除 40px header */
+            flex: 1; /* 取代原本的 calc()，自動佔滿導覽列下方的所有剩餘空間 */
             position: relative;
         }
 
@@ -81,15 +86,17 @@
             left: 0;
             z-index: 5;
             transition: opacity 0.5s ease;
+            text-align: center; /* 確保文字置中 */
         }
 
         #welcome-screen h1 {
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 5vw, 4rem); /* 讓歡迎標題在手機上自動縮小 */
             margin-bottom: 10px;
         }
         
         #welcome-screen p {
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.5rem); /* 讓副標題在手機上自動縮小 */
+            padding: 0 20px;
         }
 
         /* 嵌入網頁框架 */
@@ -104,19 +111,35 @@
             left: 0;
             z-index: 6; 
         }
+
+        /* --- 手機版專屬樣式 (小於 768px 時觸發) --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px; /* 稍微縮小左右邊距 */
+            }
+            .logo {
+                max-width: 60px; /* 限制 Logo 寬度，強迫它在手機上排成兩行 */
+                font-size: 1.1rem;
+            }
+            nav {
+                width: calc(100% - 70px); /* 讓按鈕區塊佔據剩下的空間 */
+                gap: 8px 10px; /* 控制兩排按鈕之間的上下左右距離 */
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="main-header">
         <div class="logo" onclick="showHome()">ISM PORTAL</div>
         <nav>
             <a onclick="loadPage('https://doclink-wisdom.vercel.app/')">DocLink</a>
-            <a onclick="loadPage('https://quiaudit.vercel.app/')">QuiAudit</a>
             <a onclick="loadPage('https://script.google.com/macros/s/AKfycbxNNVv-tihU5knnQ5U9yN6lP5zSN7nN6V1tGw6AGHHFqgNOWiQiO-3mEQ7_ynt437vuTg/exec')">VoyVis</a>
+            <a onclick="loadPage('https://quiaudit.vercel.app/')">QuiAudit</a>
             <a onclick="loadPage('https://script.google.com/macros/s/AKfycbwrxJOwYR48I2QKJt0mcr2DwZGHUOz3-Ek20LuH3N_5wOkBC9E2EkD5qJ0OLU3rXLji/exec')">ValiCon</a>
             <a onclick="loadPage('https://psc-rose.vercel.app/')">PSC</a>
             <a onclick="loadPage('https://ship-briefing.vercel.app/')">Video</a>
+            
         </nav>
     </header>
 
@@ -132,13 +155,22 @@
     <script>
         const iframe = document.getElementById('content-frame');
         const welcomeScreen = document.getElementById('welcome-screen');
+        const header = document.getElementById('main-header');
 
-        function loadPage(url) {
+        function loadPage(url, isFullscreen = false) {
             welcomeScreen.style.opacity = '0';
+            
             setTimeout(() => {
                 welcomeScreen.style.display = 'none';
                 iframe.style.display = 'block';
                 iframe.src = url;
+
+                // 因為改用了 Flex 排版，這裡我們只需要控制 display 即可，高度會自動適應
+                if (isFullscreen) {
+                    header.style.display = 'none';
+                } else {
+                    header.style.display = 'flex';
+                }
             }, 300);
         }
 
@@ -146,6 +178,8 @@
             iframe.style.display = 'none';
             iframe.src = ''; 
             welcomeScreen.style.display = 'flex';
+            header.style.display = 'flex'; // 確保導覽列顯示
+
             setTimeout(() => {
                 welcomeScreen.style.opacity = '1';
             }, 10);
